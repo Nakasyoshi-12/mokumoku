@@ -1,32 +1,41 @@
-import { StyleSheet } from 'react-native';
+import { useState } from "react";
+import { StyleSheet, Button } from "react-native";
 
-import EditScreenInfo from '../components/EditScreenInfo';
-import { Text, View } from '../components/Themed';
-import { RootTabScreenProps } from '../types';
+import EditScreenInfo from "../components/EditScreenInfo";
+import { Text, View } from "../components/Themed";
+import { RootTabScreenProps } from "../types";
+import { Calendar, LocaleConfig } from "react-native-calendars";
+import moment from "moment";
 
-export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
+const INITIAL_DATE = moment().format("YYYY-MM-DD");
+export default function TabOneScreen({
+  navigation,
+}: RootTabScreenProps<"TabOne">) {
+  const [selected, setSelected] = useState(INITIAL_DATE);
+  const handleDayPress = (day) => {
+    setSelected(day.dateString);
+  };
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/TabOneScreen.tsx" />
+      <Calendar
+        monthFormat={"yyyy年 MM月"}
+        current={INITIAL_DATE}
+        markedDates={{
+          [selected]: {
+            selected: true,
+            disableTouchEvent: true,
+            selectedColor: "pink",
+            selectedTextColor: "white",
+          },
+        }}
+        onDayPress={handleDayPress}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
     fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
   },
 });
